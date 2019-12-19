@@ -54,7 +54,7 @@ public class ArtistFixer
 				id3v2Tag.setAlbumArtist(id3v2Tag.getArtist());
 				try 
 				{
-					file.save(path + "\\!" + file.getFilename().substring(file.getFilename().indexOf('0')));
+					file.save(path + "\\!" + file.getFilename().substring(file.getFilename().indexOf(indexOfFirstInt(file.getFilename()))));
 				} 
 				catch (Exception e) 
 				{
@@ -105,6 +105,19 @@ public class ArtistFixer
 			replacements.remove(0);
 		}
 		
+	}
+	
+	private int indexOfFirstInt(String name)
+	{
+		int r = name.length();
+		for(int x = 0; x < 10; x++)
+		{
+			if(name.indexOf(x) != -1 && r > name.indexOf(x))
+			{
+				r = name.indexOf(x);
+			}
+		}
+		return r;
 	}
 
 	public static void main(String[] args)
