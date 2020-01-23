@@ -1,9 +1,21 @@
 package ArtistFixer;
 
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import javax.swing.Action;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.InvalidDataException;
@@ -16,12 +28,58 @@ public class ArtistFixer
 	private String path;
 	private File[] files;
 	private ArrayList<Mp3File> mp3Files;
+	private JFrame window = new JFrame("ArtistFixer");
+	private JLabel label;
 
-	public ArtistFixer(String path)
+	public ArtistFixer()
+	{
+		makeWindow();
+	}
+
+	public void setPath(String path)
 	{
 		this.path = path;
 		files = (new File(path)).listFiles();
 		intializeMp3Files();
+	}
+
+	private void makeWindow()
+	{
+		window = new JFrame("ArtistFixer");
+		window.setVisible(true);
+		JPanel panel = new JPanel(new BorderLayout());
+		JTextField text = new JTextField("Pathway");
+		KeyListener listener = new KeyListener()
+		{
+			@Override
+			public void keyPressed(KeyEvent event){}
+			@Override
+			public void keyReleased(KeyEvent event){}
+			@Override
+			public void keyTyped(KeyEvent event){}
+		};
+		text.addKeyListener(listener);
+
+		text.addActionListener(new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				path = text.getText();
+				label.setText(setAlbumArtistToArtist());
+			}
+		}
+				);
+
+		JPanel panel2 = new JPanel(new BorderLayout());
+		panel.add(panel2, BorderLayout.PAGE_END);
+		panel2.add(new JLabel("File Pathway: ", SwingConstants.LEFT), BorderLayout.WEST);
+		panel2.add(text, BorderLayout.EAST);
+		window.add(panel);
+		label = new JLabel("Changes made:", SwingConstants.LEFT);
+		panel.add(label, BorderLayout.PAGE_START);
+		window.pack();
+		window.setSize(800, 600);
 	}
 
 	private void intializeMp3Files()
@@ -73,9 +131,10 @@ public class ArtistFixer
 		{
 			fixNames();
 		}
+		label.setText(r);
 		return r;
 	}
-	
+
 	private void fixNames()
 	{
 		files = (new File(path)).listFiles();
@@ -108,9 +167,9 @@ public class ArtistFixer
 			replacements.get(0).delete();
 			replacements.remove(0);
 		}
-		
+
 	}
-	
+
 	private int indexOfFirstInt(String name)
 	{
 		int r = name.length();
@@ -128,7 +187,8 @@ public class ArtistFixer
 	{
 		Scanner scan = new Scanner(System.in);
 		System.out.print("File pathway: ");
-		ArtistFixer artistFixer = new ArtistFixer(scan.nextLine());
+		ArtistFixer artistFixer = new ArtistFixer();
+		artistFixer.setPath(scan.nextLine());
 		scan.close();
 		artistFixer.setAlbumArtistToArtist();
 	}
