@@ -40,8 +40,9 @@ public class ArtistFixer
 		}
 	}
 
-	public void setAlbumArtistToArtist()
+	public String setAlbumArtistToArtist()
 	{
+		String r = "";
 		boolean noChanges = true;
 		for(int x = 0; x < mp3Files.size(); x++)
 		{
@@ -51,6 +52,7 @@ public class ArtistFixer
 			{
 				noChanges = false;
 				System.out.println(id3v2Tag.getTitle() + ", " + id3v2Tag.getAlbumArtist() + " ---> " + id3v2Tag.getArtist());
+				r += id3v2Tag.getTitle() + ", " + id3v2Tag.getAlbumArtist() + " ---> " + id3v2Tag.getArtist() + "\n";
 				id3v2Tag.setAlbumArtist(id3v2Tag.getArtist());
 				try 
 				{
@@ -65,11 +67,13 @@ public class ArtistFixer
 		if(noChanges)
 		{
 			System.out.print("No changes made");
+			r += "No changes made";
 		}
 		else
 		{
 			fixNames();
 		}
+		return r;
 	}
 	
 	private void fixNames()
