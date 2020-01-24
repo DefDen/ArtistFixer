@@ -1,6 +1,8 @@
 package ArtistFixer;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -30,25 +32,23 @@ public class ArtistFixer
 	private ArrayList<Mp3File> mp3Files;
 	private JFrame window = new JFrame("ArtistFixer");
 	private JLabel label;
+	private JPanel panel;
 
 	public ArtistFixer()
 	{
 		makeWindow();
 	}
 
-	public void setPath(String path)
+	private void setPath(String path)
 	{
 		this.path = path;
 		files = (new File(path)).listFiles();
 		intializeMp3Files();
 	}
 
-	private void makeWindow()
+	private void makeJTextField(GridBagConstraints c)
 	{
-		window = new JFrame("ArtistFixer");
-		window.setVisible(true);
-		JPanel panel = new JPanel(new BorderLayout());
-		JTextField text = new JTextField("Pathway");
+		JTextField text = new JTextField(20);
 		KeyListener listener = new KeyListener()
 		{
 			@Override
@@ -65,21 +65,44 @@ public class ArtistFixer
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				path = text.getText();
+				setPath(text.getText());
+				System.out.print(path);
 				label.setText(setAlbumArtistToArtist());
 			}
 		}
 				);
 
-		JPanel panel2 = new JPanel(new BorderLayout());
-		panel.add(panel2, BorderLayout.PAGE_END);
-		panel2.add(new JLabel("File Pathway: ", SwingConstants.LEFT), BorderLayout.WEST);
-		panel2.add(text, BorderLayout.EAST);
+		c.gridx = 1;
+		c.gridy = 1;
+		c.anchor = GridBagConstraints.PAGE_START;
+		panel.add(text, c);
 		window.add(panel);
+	}
+	
+	private void makeWindow()
+	{
+		window = new JFrame("ArtistFixer");
+		window.setVisible(true);
+		panel = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+
+		makeJTextField(c);
+		
+		c.gridx = 0;
+		c.gridy = 1;
+		c.anchor = GridBagConstraints.PAGE_END;
+		panel.add(new JLabel("File Pathway: ", SwingConstants.LEFT), c);
+
+		
 		label = new JLabel("Changes made:", SwingConstants.LEFT);
-		panel.add(label, BorderLayout.PAGE_START);
+
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = 0;
+		c.ipady = 400; 
+		c.anchor = GridBagConstraints.PAGE_START;
+		panel.add(label, c);
 		window.pack();
-		window.setSize(800, 600);
 	}
 
 	private void intializeMp3Files()
@@ -185,12 +208,7 @@ public class ArtistFixer
 
 	public static void main(String[] args)
 	{
-		Scanner scan = new Scanner(System.in);
-		System.out.print("File pathway: ");
 		ArtistFixer artistFixer = new ArtistFixer();
-		artistFixer.setPath(scan.nextLine());
-		scan.close();
-		artistFixer.setAlbumArtistToArtist();
 	}
 }
 
